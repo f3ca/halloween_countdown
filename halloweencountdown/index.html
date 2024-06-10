@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halloween Countdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Countdown to Halloween</h1>
+    <div class="countdown" id="countdown">
+        <div>
+            <span id="days">0</span>
+            <div class="label">Days</div>
+        </div>
+        <div>
+            <span id="hours">0</span>
+            <div class="label">Hours</div>
+        </div>
+        <div>
+            <span id="minutes">0</span>
+            <div class="label">Minutes</div>
+        </div>
+        <div>
+            <span id="seconds">0</span>
+            <div class="label">Seconds</div>
+        </div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-bar-inner" id="progress-bar-inner"></div>
+    </div>
+
+    <button class="toggle-music" id="toggle-music">Play Music</button>
+
+    <audio id="background-music" src="audio/halloween.mp3" loop preload="auto"></audio>
+
+    <audio id="tick-tock" src="audio/ticktock.mp3" preload="auto"></audio>
+
+    <div class="modal" id="halloween-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2>About Halloween</h2>
+            <p>Halloween is celebrated on October 31st. It is a time for costumes, candy, and spooky fun!</p>
+        </div>
+    </div>
+
+    <div class="quote" id="quote">"Every day is Halloween, isn't it? For some of us." - Tim Burton</div>
+
+    <div class="social-icons">
+        <img src="path/to/your/facebook-icon.png" alt="Facebook">
+        <img src="path/to/your/twitter-icon.png" alt="Twitter">
+        <img src="path/to/your/instagram-icon.png" alt="Instagram">
+    </div>
+
+    <div class="facts" id="facts">Halloween Fact: Did you know that Halloween is the second highest-grossing commercial holiday after Christmas?</div>
+
+    <script>
+        let audioPlayed = false;
+        document.addEventListener('click', () => {
+            if (!audioPlayed) {
+                document.getElementById('tick-tock').play();
+                audioPlayed = true;
+            }
+        });
+
+        const halloweenDate = new Date('October 31, 2024 00:00:00').getTime();
+        const progressBarInner = document.getElementById('progress-bar-inner');
+        const modal = document.getElementById('halloween-modal');
+        const closeModal = document.getElementById('close-modal');
+        const toggleMusicButton = document.getElementById('toggle-music');
+        const backgroundMusic = document.getElementById('background-music');
+        const quoteElement = document.getElementById('quote');
+        const factsElement = document.getElementById('facts');
+        let musicPlaying = false;
+
+        const quotes = [
+            "\"Every day is Halloween, isn't it? For some of us.\" - Tim Burton",
+            "\"It's as much fun to scare as to be scared.\" - Vincent Price",
+            "\"There is magic in the night when pumpkins glow by moonlight.\"",
+            "\"Shadows of a thousand years rise again unseen. Voices whisper in the trees, 'Tonight is Halloween!'\"",
+        ];
+
+        const facts = [
+            "Halloween is the second highest-grossing commercial holiday after Christmas.",
+            "The first Jack O’Lanterns were actually made from turnips.",
+            "Halloween is thought to have originated around 4000 B.C., which means Halloween has been around for over 6,000 years.",
+            "Ireland is typically believed to be the birthplace of Halloween."
+        ];
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = halloweenDate - now;
+
+            if (distance < 0) {
+                clearInterval(interval);
+                document.getElementById('countdown').innerHTML = "<h2>Happy Halloween!</h2>";
+                document.body.style.backgroundImage = "url('path/to/your/fireworks-image.png')";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+
+            const totalTime = halloweenDate - (new Date('October 31, 2023 00:00:00')).getTime();
+            const elapsedTime = now - (new Date('October 31, 2023 00:00:00')).getTime();
+            const percentage = (elapsedTime / totalTime) * 100;
+            progressBarInner.style.width = percentage + '%';
+
+            document.body.style.backgroundColor = `rgba(${Math.floor(255 * (1 - (distance / totalTime)))}, 0, 0, 0.5)`;
+        }
+
+        const interval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call to set the countdown immediately
+
+        toggleMusicButton.addEventListener('click', () => {
+            if (musicPlaying) {
+                backgroundMusic.pause();
+                toggleMusicButton.innerText = 'Play Music';
+            } else {
+                backgroundMusic.play();
+                toggleMusicButton.innerText = 'Pause Music';
+            }
+            musicPlaying = !musicPlaying;
+        });
+
+        setTimeout(() => {
+            modal.style.display = 'flex';
+        }, 5000); // Show modal after 5 seconds
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        function changeBackground() {
+            const backgrounds = [
+                'path/to/your/background-image1.png',
+                'path/to/your/background-image2.png',
+                'path/to/your/background-image3.png'
+            ];
+            const index = Math.floor(Math.random() * backgrounds.length);
+            document.body.style.backgroundImage = `url(${backgrounds[index]})`;
+        }
+
+        setInterval(changeBackground, 10000); // Change background every 10 seconds
+
+        function showQuote() {
+            const index = Math.floor(Math.random() * quotes.length);
+            quoteElement.innerText = quotes[index];
+        }
+
+        setInterval(showQuote, 15000); // Show a new quote every 15 seconds
+
+        function showFact() {
+            const index = Math.floor(Math.random() * facts.length);
+            factsElement.innerText = facts[index];
+        }
+
+        setInterval(showFact, 20000); // Show a new fact every 20 seconds
+
+        function addGhosts() {
+            const ghostCount = 5;
+            for (let i = 0; i < ghostCount; i++) {
+                const ghost = document.createElement('div');
+                ghost.classList.add('ghost');
+                ghost.style.top = `${Math.random() * 80 + 10}%`;
+                ghost.style.left = `${Math.random() * 80 + 10}%`;
+                document.body.appendChild(ghost);
+            }
+        }
+
+        addGhosts();
+
+        function applyDayNightTheme() {
+            const hours = new Date().getHours();
+            if (hours >= 6 && hours < 18) {
+                document.body.style.filter = 'brightness(100%)';
+            } else {
+                document.body.style.filter = 'brightness(50%)';
+            }
+        }
+
+        applyDayNightTheme();
+        setInterval(applyDayNightTheme, 3600000); // Check theme every hour
+    </script>
+</body>
+</html>
